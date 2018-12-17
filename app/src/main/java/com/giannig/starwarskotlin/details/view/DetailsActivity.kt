@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
 import com.giannig.starwarskotlin.details.DetailsPresenter
@@ -22,7 +23,7 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
         val planetId = intent.getStringExtra(PLANET_ID_EXTRA)
-        presenter.loadData(planetId)
+        presenter.dispatchData(planetId)
         planetImageView.setImageDrawable(getDrawable(R.drawable.empire))
         planetImageView.visibility = GONE
         hideTextViews()
@@ -46,8 +47,8 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         textPlanetSurface.visibility = GONE
     }
 
-    override fun showErrorMessage() {
-        textDetailsPlanetName.text = getString(R.string.error_details)
+    override fun showErrorMessage(message: String?) {
+        textDetailsPlanetName.text = message ?: getString(com.giannig.starwarskotlin.R.string.error_details)
     }
 
     override fun showData(planet: StarWarsSinglePlanet) {
@@ -60,12 +61,10 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
                 R.string.population,
                 population
             )
-
             textPlanetDimensions.text = getString(
                 R.string.planet_dimensions,
                 diameter
             )
-
             textPlanetSurface.text = getString(
                 R.string.terrain_and_water,
                 terrain ?: "no terrain",

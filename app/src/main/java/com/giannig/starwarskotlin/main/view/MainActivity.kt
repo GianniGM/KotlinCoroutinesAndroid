@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
-import com.giannig.starwarskotlin.main.MainPresenter
 import com.giannig.starwarskotlin.details.view.DetailsActivity
+import com.giannig.starwarskotlin.main.MainPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -64,7 +64,11 @@ class MainActivity : AppCompatActivity(), MainView {
         errorText.visibility = View.GONE
     }
 
-    override fun showErrorMessage() {
+    override fun showErrorMessage(message: String?) {
+        message?.let {
+            errorText.text = it
+        }
+
         swipeToRefreshContainer.isRefreshing = false
         itemList.visibility = View.GONE
         errorText.visibility = View.VISIBLE

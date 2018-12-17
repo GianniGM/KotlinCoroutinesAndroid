@@ -2,41 +2,57 @@ package com.giannig.starwarskotlin.data
 
 import com.giannig.starwarskotlin.data.api.Api
 import com.giannig.starwarskotlin.data.api.StarWarsApi
-import com.giannig.starwarskotlin.data.dto.StarWarsPlanetList
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 object StarWarsDataProvider {
 
-    private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+    private val loggingInterceptor = HttpLoggingInterceptor()
+        .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .callTimeout(10, TimeUnit.SECONDS)
+        .build()
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(Api.BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .build().create(StarWarsApi::class.java)
+        .build()
+        .create(StarWarsApi::class.java)
 
-    suspend fun providePlanets(): StarWarsPlanetList {
-        return retrofit.getPlanetList().await()
-    }
-
-    suspend fun provideSinglePlanet(planetId: String): StarWarsSinglePlanet {
-        return retrofit.getPlanet(planetId).await()
-    }
-
-    suspend fun getPlanets(counter: Int): List<StarWarsSinglePlanet> {
-        val planetList = mutableListOf<StarWarsSinglePlanet>()
-
-        for (id in 1..counter) {
-            planetList += provideSinglePlanet(id.toString())
+    suspend fun providePlanets(): State {
+        return try {
+            retrofit.getPlanetList().await().planets?.let {
+                State.PlanetList(it)
+            } ?: State.Error
+        } catch (e: IOException) {
+            State.NetworkError(e.localizedMessage)
         }
-
-        return planetList
     }
+
+    suspend fun provideSinglePlanet(planetId: String): State {
+        return try {
+            retrofit.getPlanet(planetId).await().let {
+                State.SinglePlanet(it)
+            }
+        } catch (e: IOException) {
+            State.NetworkError(e.localizedMessage)
+        }
+    }
+}
+
+sealed class State {
+    object Error : State()
+    data class NetworkError(val message: String) : State()
+    data class SinglePlanet(val planet: StarWarsSinglePlanet) : State()
+    data class PlanetList(val planets: List<StarWarsSinglePlanet>) : State()
 }
