@@ -19,8 +19,7 @@ class DetailsPresenter(private val view: DetailsActivity) : CoroutineScope {
     }
 
     fun dispatchData(planetId: String) = launch {
-        val responseState = StarWarsDataProvider.provideSinglePlanet(planetId)
-        when (responseState) {
+        when (val responseState = StarWarsDataProvider.provideSinglePlanet(planetId)) {
             is State.SinglePlanet -> updateData(responseState.planet)
             is State.NetworkError -> updateErrorMessage(responseState.message)
             else -> updateErrorMessage(null)
