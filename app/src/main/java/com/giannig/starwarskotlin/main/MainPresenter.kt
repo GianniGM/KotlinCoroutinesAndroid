@@ -29,8 +29,7 @@ class MainPresenter(private val view: MainView) : CoroutineScope {
     }
 
     private fun loadData() = launch {
-        val responseState = StarWarsDataProvider.providePlanets()
-        when (responseState) {
+        when (val responseState = StarWarsDataProvider.providePlanets()) {
             is State.PlanetList -> updateUi(responseState.planets)
             is State.NetworkError -> showErrorMessage(responseState.message)
             else -> showErrorMessage(null)

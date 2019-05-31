@@ -31,7 +31,7 @@ object StarWarsDataProvider {
 
     suspend fun providePlanets(): State {
         return try {
-            retrofit.getPlanetList().await().planets?.let {
+            retrofit.getPlanetListAsync().await().planets?.let {
                 State.PlanetList(it)
             } ?: State.Error
         } catch (e: IOException) {
@@ -41,7 +41,7 @@ object StarWarsDataProvider {
 
     suspend fun provideSinglePlanet(planetId: String): State {
         return try {
-            retrofit.getPlanet(planetId).await().let {
+            retrofit.getPlanetAsync(planetId).await().let {
                 State.SinglePlanet(it)
             }
         } catch (e: IOException) {

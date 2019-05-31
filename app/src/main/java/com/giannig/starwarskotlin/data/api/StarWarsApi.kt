@@ -8,8 +8,8 @@ import retrofit2.http.Path
 
 interface StarWarsApi {
     @GET("planets")
-    fun getPlanetList(): Deferred<StarWarsPlanetList>
+    fun getPlanetListAsync(): Deferred<StarWarsPlanetList>
 
     @GET("planets/{id}")
-    fun getPlanet(@Path("id") id: String): Deferred<StarWarsSinglePlanet>
+    fun getPlanetAsync(@Path("id") id: String): Deferred<StarWarsSinglePlanet>
 }
