@@ -2,35 +2,44 @@ package com.giannig.starwarskotlin.details
 
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
 import com.giannig.starwarskotlin.data.State
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
-import com.giannig.starwarskotlin.details.view.DetailsActivity
+import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
+import com.giannig.starwarskotlin.details.view.DetailsView
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class DetailsPresenter(private val view: DetailsActivity) : CoroutineScope {
+class DetailsPresenter(private val view: DetailsView) : CoroutineScope {
 
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.IO
 
+    fun onStart() {
+        view.loading()
+    }
+
+    fun loadPlanetDetails(planetId: String) {
+        updateUIState(planetId)
+    }
+
+
     fun onClose() {
         job.cancel()
     }
 
-    fun dispatchData(planetId: String) = launch {
+    private fun updateUIState(planetId: String) = launch {
         when (val responseState = StarWarsDataProvider.provideSinglePlanet(planetId)) {
-            is State.SinglePlanet -> updateData(responseState.planet)
-            is State.NetworkError -> updateErrorMessage(responseState.message)
-            else -> updateErrorMessage(null)
+            is State.SinglePlanet -> showPlanetView(responseState.planet)
+            is State.NetworkError -> showErrorMessage(responseState.message)
+            else -> showErrorMessage(null)
         }
     }
 
-    private suspend fun updateData(result: StarWarsSinglePlanet) = withContext(Dispatchers.Main) {
-        view.showData(result)
+    private suspend fun showPlanetView(result: StarWarsSinglePlanetDto) = withContext(Dispatchers.Main) {
+        view.showPlanetData(result)
     }
 
-    private suspend fun updateErrorMessage(message: String?) = withContext(Dispatchers.Main) {
+    private suspend fun showErrorMessage(message: String?) = withContext(Dispatchers.Main) {
         view.showErrorMessage(message)
     }
 }

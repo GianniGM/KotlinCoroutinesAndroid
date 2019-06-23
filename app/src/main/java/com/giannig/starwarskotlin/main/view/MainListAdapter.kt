@@ -6,18 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.giannig.starwarskotlin.R
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
+import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 
+/**
+ * Adapter for The [RecyclerView] of [MainActivity]
+ */
 class MainListAdapter : RecyclerView.Adapter<MainListAdapter.MainListViewHolder>() {
 
-    private var list: List<StarWarsSinglePlanet> = emptyList()
+    private var list: List<StarWarsSinglePlanetDto> = emptyList()
     private var onItemClick: (Int) -> Unit = {}
 
-    fun addValues(newList: List<StarWarsSinglePlanet>) {
+    /**
+     * Add planets into the list
+     */
+    fun addValues(newList: List<StarWarsSinglePlanetDto>) {
         list = list.plus(newList)
         notifyDataSetChanged()
     }
 
+    /**
+     * set Click listener of the planet
+     */
     fun setClickLister(onClick: (Int) -> Unit) {
         onItemClick = onClick
     }
@@ -38,10 +47,17 @@ class MainListAdapter : RecyclerView.Adapter<MainListAdapter.MainListViewHolder>
         }
     }
 
+
+    /**
+     * Planet list View Holder
+     */
     class MainListViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
         private val planetNameText = v.findViewById<TextView>(R.id.textPlanetName)
 
-        fun set(item: StarWarsSinglePlanet, onClick: (View) -> Unit) {
+        /**
+         * set the view of the planet item
+         */
+        fun set(item: StarWarsSinglePlanetDto, onClick: (View) -> Unit) {
             planetNameText.text = item.name
             v.setOnClickListener{onClick(it)}
         }

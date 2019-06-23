@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
+import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
@@ -22,11 +22,14 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        val planetId = intent.getStringExtra(PLANET_ID_EXTRA)
-        presenter.dispatchData(planetId)
         planetImageView.setImageDrawable(getDrawable(R.drawable.empire))
         planetImageView.visibility = GONE
         hideTextViews()
+
+        val planetId = intent.getStringExtra(PLANET_ID_EXTRA)
+        presenter.onStart()
+        presenter.loadPlanetDetails(planetId)
+
     }
 
     override fun onDestroy() {
@@ -51,7 +54,7 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         textDetailsPlanetName.text = message ?: getString(com.giannig.starwarskotlin.R.string.error_details)
     }
 
-    override fun showData(planet: StarWarsSinglePlanet) {
+    override fun showPlanetData(planet: StarWarsSinglePlanetDto) {
         detailsLoading.visibility = GONE
         planetImageView.visibility = VISIBLE
 

@@ -2,7 +2,6 @@ package com.giannig.starwarskotlin.data
 
 import com.giannig.starwarskotlin.data.api.Api
 import com.giannig.starwarskotlin.data.api.StarWarsApi
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,6 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+/**
+ * Provides all the necessary to connect to Apis
+ */
 object StarWarsDataProvider {
 
     private val loggingInterceptor = HttpLoggingInterceptor()
@@ -29,14 +31,18 @@ object StarWarsDataProvider {
         .build()
         .create(StarWarsApi::class.java)
 
-    suspend fun providePlanets(): State {
-        return try {
-            retrofit.getPlanetListAsync().await().planets?.let {
-                State.PlanetList(it)
-            } ?: State.Error
-        } catch (e: IOException) {
-            State.NetworkError(e.localizedMessage)
-        }
+    /**
+     * Provides all the planet list
+     */
+    suspend fun providePlanets(): State = try {
+        retrofit
+            .getPlanetListAsync()
+            .await()
+            .planets?.let {
+            State.PlanetList(it)
+        } ?: State.Error
+    } catch (e: IOException) {
+        State.NetworkError(e.localizedMessage)
     }
 
     suspend fun provideSinglePlanet(planetId: String): State {
@@ -50,9 +56,4 @@ object StarWarsDataProvider {
     }
 }
 
-sealed class State {
-    object Error : State()
-    data class NetworkError(val message: String) : State()
-    data class SinglePlanet(val planet: StarWarsSinglePlanet) : State()
-    data class PlanetList(val planets: List<StarWarsSinglePlanet>) : State()
-}
+

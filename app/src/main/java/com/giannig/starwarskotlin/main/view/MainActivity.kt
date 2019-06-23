@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.giannig.starwarskotlin.R
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanet
+import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.view.DetailsActivity
 import com.giannig.starwarskotlin.main.MainPresenter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), MainView {
         adapter.setClickLister { onClickItem(it) }
         itemList.layoutManager = LinearLayoutManager(this)
         itemList.adapter = adapter
-        presenter.update()
+        presenter.onStart()
         setUpSwipeToRefresh()
     }
 
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), MainView {
         )
     }
 
-    override fun updateList(list: List<StarWarsSinglePlanet>) {
+    override fun updateList(list: List<StarWarsSinglePlanetDto>) {
         adapter.addValues(list)
     }
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), MainView {
         presenter.onClose()
     }
 
-    override fun loading() {
+    override fun loadView() {
         swipeToRefreshContainer.isRefreshing = true
         errorText.visibility = View.GONE
     }
