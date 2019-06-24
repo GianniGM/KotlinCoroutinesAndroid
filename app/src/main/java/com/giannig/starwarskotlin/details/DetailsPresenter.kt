@@ -43,3 +43,30 @@ class DetailsPresenter(private val view: DetailsView) : CoroutineScope {
         view.showErrorMessage(message)
     }
 }
+
+//    EXAMPLES
+//    fun main() {
+//        val value = GlobalScope.async {
+//            fetchPlanets(4)
+//        }
+//
+//    }
+//
+//    suspend fun fetchPlanets(counter: Int): List<StarWarsSinglePlanetDto> {
+//        val planetList = mutableListOf<StarWarsSinglePlanetDto>()
+//
+//        for (i in 1..counter) {
+//            planetList += provideStarWarsPlanet(i.toString())
+//        }
+//
+//        return planetList
+//    }
+//
+//    suspend fun provideStarWarsPlanet(id: String): StarWarsPlanetListDto{
+//        val planet = GlobalScope.async {//this: Coroutine Scope
+//            "1) send the request"
+//        }
+//        val jsonResponse: String = planet.await()
+//        return fromJsonToStarWarsDto(jsonResponse)
+//    }
+//

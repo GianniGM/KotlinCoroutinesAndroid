@@ -45,6 +45,25 @@ object StarWarsDataProvider {
         State.NetworkError(e.localizedMessage)
     }
 
+//fun call() {
+//    val call: Call<List<StarWarsSinglePlanetDto>> = retrofit.getPlanetListAsync()
+//
+//    call.enqueue(object : Callback<List<StarWarsSinglePlanetDto>> {
+//        override fun onFailure(call: Call<List<StarWarsSinglePlanetDto>>, t: Throwable) {
+//            // handle succes
+//        }
+//
+//        override fun onResponse(
+//            call: Call<List<StarWarsSinglePlanetDto>>,
+//            response: Response<List<StarWarsSinglePlanetDto>>
+//        ) {
+//            // handle failure
+//        }
+//
+//    })
+//}
+
+
     suspend fun provideSinglePlanet(planetId: String): State {
         return try {
             retrofit.getPlanetAsync(planetId).await().let {
