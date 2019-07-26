@@ -1,72 +1,22 @@
 package com.giannig.starwarskotlin.details
 
+import com.giannig.starwarskotlin.arch.Presenter
+import com.giannig.starwarskotlin.arch.ViewState
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
-import com.giannig.starwarskotlin.data.State
-import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
-import com.giannig.starwarskotlin.details.view.DetailsView
-import kotlinx.coroutines.*
+import com.giannig.starwarskotlin.data.StarWarsState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class DetailsPresenter(private val view: DetailsView) : CoroutineScope {
+class DetailsPresenter(coroutineContext: CoroutineContext) :
+    Presenter<StarWarsState>(coroutineContext) {
 
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
-
-    fun onStart() {
-        view.loading()
-    }
-
-    fun loadPlanetDetails(planetId: String) {
-        updateUIState(planetId)
-    }
-
-
-    fun onClose() {
-        job.cancel()
-    }
-
-    private fun updateUIState(planetId: String) = launch {
-        when (val responseState = StarWarsDataProvider.provideSinglePlanet(planetId)) {
-            is State.SinglePlanet -> showPlanetView(responseState.planet)
-            is State.NetworkError -> showErrorMessage(responseState.message)
-            else -> showErrorMessage(null)
+    override fun doOnAsync(view: ViewState<StarWarsState>) = launch {
+        view.updateState(StarWarsState.Loading)
+        val responseState = StarWarsDataProvider.provideSinglePlanet("1")
+        withContext(Dispatchers.Main) {
+            view.updateState(responseState)
         }
     }
-
-    private suspend fun showPlanetView(result: StarWarsSinglePlanetDto) = withContext(Dispatchers.Main) {
-        view.showPlanetData(result)
-    }
-
-    private suspend fun showErrorMessage(message: String?) = withContext(Dispatchers.Main) {
-        view.showErrorMessage(message)
-    }
 }
-
-//    EXAMPLES
-//    fun main() {
-//        val value = GlobalScope.async {
-//            fetchPlanets(4)
-//        }
-//
-//    }
-//
-//    suspend fun fetchPlanets(counter: Int): List<StarWarsSinglePlanetDto> {
-//        val planetList = mutableListOf<StarWarsSinglePlanetDto>()
-//
-//        for (i in 1..counter) {
-//            planetList += provideStarWarsPlanet(i.toString())
-//        }
-//
-//        return planetList
-//    }
-//
-//    suspend fun provideStarWarsPlanet(id: String): StarWarsPlanetListDto{
-//        val planet = GlobalScope.async {//this: Coroutine Scope
-//            "1) send the request"
-//        }
-//        val jsonResponse: String = planet.await()
-//        return fromJsonToStarWarsDto(jsonResponse)
-//    }
-//

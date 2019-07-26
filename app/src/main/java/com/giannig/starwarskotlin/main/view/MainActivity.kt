@@ -5,16 +5,30 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.giannig.starwarskotlin.R
+import com.giannig.starwarskotlin.arch.ViewState
+import com.giannig.starwarskotlin.data.StarWarsState
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.view.DetailsActivity
 import com.giannig.starwarskotlin.main.MainPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
-    private val presenter = MainPresenter(this)
+    private val presenter = MainPresenter()
     private val adapter = MainListAdapter()
+
+
+    override fun updateState(state: StarWarsState) {
+        when (state) {
+            is StarWarsState.PlanetList -> updateList(state.planets)
+            is StarWarsState.NetworkError -> showErrorMessage(state.message)
+            StarWarsState.Error -> showErrorMessage("")
+            StarWarsState.Loading -> loadView()
+            else -> loadView()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +37,7 @@ class MainActivity : AppCompatActivity(), MainView {
         adapter.setClickLister { onClickItem(it) }
         itemList.layoutManager = LinearLayoutManager(this)
         itemList.adapter = adapter
-        presenter.onStart()
+        presenter.onStart(this)
         setUpSwipeToRefresh()
     }
 
@@ -34,7 +48,9 @@ class MainActivity : AppCompatActivity(), MainView {
     }
 
     private fun setUpSwipeToRefresh() {
-        swipeToRefreshContainer.setOnRefreshListener { presenter.update() }
+        swipeToRefreshContainer.setOnRefreshListener {
+            //todo
+        }
 
         swipeToRefreshContainer.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -44,7 +60,7 @@ class MainActivity : AppCompatActivity(), MainView {
         )
     }
 
-    override fun updateList(list: List<StarWarsSinglePlanetDto>) {
+    private fun updateList(list: List<StarWarsSinglePlanetDto>) {
         adapter.addValues(list)
     }
 
@@ -53,18 +69,18 @@ class MainActivity : AppCompatActivity(), MainView {
         presenter.onClose()
     }
 
-    override fun loadView() {
+    private fun loadView() {
         swipeToRefreshContainer.isRefreshing = true
         errorText.visibility = View.GONE
     }
 
-    override fun showItemList() {
+    fun showItemList() {
         swipeToRefreshContainer.isRefreshing = false
         itemList.visibility = View.VISIBLE
         errorText.visibility = View.GONE
     }
 
-    override fun showErrorMessage(message: String?) {
+    private fun showErrorMessage(message: String?) {
         message?.let {
             errorText.text = it
         }

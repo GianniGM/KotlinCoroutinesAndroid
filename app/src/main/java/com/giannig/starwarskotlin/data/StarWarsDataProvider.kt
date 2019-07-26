@@ -34,43 +34,24 @@ object StarWarsDataProvider {
     /**
      * Provides all the planet list
      */
-    suspend fun providePlanets(): State = try {
+    suspend fun providePlanets(): StarWarsState = try {
         retrofit
             .getPlanetListAsync()
             .await()
             .planets?.let {
-            State.PlanetList(it)
-        } ?: State.Error
+            StarWarsState.PlanetList(it)
+        } ?: StarWarsState.Error
     } catch (e: IOException) {
-        State.NetworkError(e.localizedMessage)
+        StarWarsState.NetworkError(e.localizedMessage)
     }
 
-//fun call() {
-//    val call: Call<List<StarWarsSinglePlanetDto>> = retrofit.getPlanetListAsync()
-//
-//    call.enqueue(object : Callback<List<StarWarsSinglePlanetDto>> {
-//        override fun onFailure(call: Call<List<StarWarsSinglePlanetDto>>, t: Throwable) {
-//            // handle succes
-//        }
-//
-//        override fun onResponse(
-//            call: Call<List<StarWarsSinglePlanetDto>>,
-//            response: Response<List<StarWarsSinglePlanetDto>>
-//        ) {
-//            // handle failure
-//        }
-//
-//    })
-//}
-
-
-    suspend fun provideSinglePlanet(planetId: String): State {
+    suspend fun provideSinglePlanet(planetId: String): StarWarsState {
         return try {
             retrofit.getPlanetAsync(planetId).await().let {
-                State.SinglePlanet(it)
+                StarWarsState.SinglePlanet(it)
             }
         } catch (e: IOException) {
-            State.NetworkError(e.localizedMessage)
+            StarWarsState.NetworkError(e.localizedMessage)
         }
     }
 }

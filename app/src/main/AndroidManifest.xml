@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
-                android:name="com.giannig.starwarskotlin.details.view.DetailsActivity"
+                android:name="com.giannig.starwarskotlin.details.view.Activity"
                 android:parentActivityName="com.giannig.starwarskotlin.main.view.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

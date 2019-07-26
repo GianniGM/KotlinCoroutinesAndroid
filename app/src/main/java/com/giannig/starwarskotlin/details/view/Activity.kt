@@ -1,5 +1,6 @@
 package com.giannig.starwarskotlin.details.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,17 +8,17 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
+import com.giannig.starwarskotlin.arch.ViewState
+import com.giannig.starwarskotlin.data.StarWarsState
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
-class DetailsActivity : AppCompatActivity(), DetailsView {
-    private val presenter = DetailsPresenter(this)
+class DetailsActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
-    companion object {
-        const val PLANET_ID_EXTRA = "PLANET_ID_EXTRA"
-        fun createIntent(context: Context): Intent = Intent(context, DetailsActivity::class.java)
-    }
+    private val presenter = DetailsPresenter(Job() + Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +27,7 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         planetImageView.visibility = GONE
         hideTextViews()
 
-        val planetId = intent.getStringExtra(PLANET_ID_EXTRA)
-        presenter.onStart()
-        presenter.loadPlanetDetails(planetId)
+        presenter.onStart(this)
 
     }
 
@@ -37,7 +36,16 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         presenter.onClose()
     }
 
-    override fun loading() {
+    override fun updateState(state: StarWarsState) {
+        when (state) {
+            is StarWarsState.SinglePlanet -> showPlanetData(state.planet)
+            is StarWarsState.NetworkError -> showErrorMessage(state.message)
+            StarWarsState.Loading -> loading()
+            else -> showErrorMessage(null)
+        }
+    }
+
+    fun loading() {
         detailsLoading.visibility = VISIBLE
         planetImageView.visibility = GONE
         hideTextViews()
@@ -50,11 +58,11 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         textPlanetSurface.visibility = GONE
     }
 
-    override fun showErrorMessage(message: String?) {
+    private fun showErrorMessage(message: String?) {
         textDetailsPlanetName.text = message ?: getString(com.giannig.starwarskotlin.R.string.error_details)
     }
 
-    override fun showPlanetData(planet: StarWarsSinglePlanetDto) {
+    private fun showPlanetData(planet: StarWarsSinglePlanetDto) {
         detailsLoading.visibility = GONE
         planetImageView.visibility = VISIBLE
 
@@ -84,4 +92,10 @@ class DetailsActivity : AppCompatActivity(), DetailsView {
         textPlanetDimensions.visibility = VISIBLE
         textPlanetSurface.visibility = VISIBLE
     }
+
+    companion object {
+        const val PLANET_ID_EXTRA = "PLANET_ID_EXTRA"
+        fun createIntent(context: Context): Intent = Intent(context, Activity::class.java)
+    }
+
 }
