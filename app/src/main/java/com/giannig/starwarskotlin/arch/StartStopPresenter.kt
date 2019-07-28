@@ -6,7 +6,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
-abstract class Presenter<S : State>(
+
+abstract class StartStopPresenter<S : State>(
     private val coroutineContextJob: CoroutineContext = Job() + Dispatchers.IO
 ) : CoroutineScope {
 

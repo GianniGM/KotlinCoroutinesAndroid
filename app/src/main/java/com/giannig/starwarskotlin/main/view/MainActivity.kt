@@ -18,18 +18,6 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
     private val presenter = MainPresenter()
     private val adapter = MainListAdapter()
 
-
-    override fun updateState(state: StarWarsState) {
-        when (state) {
-            is StarWarsState.PlanetList -> updateList(state.planets)
-            is StarWarsState.NetworkError -> showErrorMessage(state.message)
-            StarWarsState.Error -> showErrorMessage("")
-            StarWarsState.Loading -> loadView()
-            else -> loadView()
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,7 +26,13 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
         itemList.layoutManager = LinearLayoutManager(this)
         itemList.adapter = adapter
         presenter.onStart(this)
-        setUpSwipeToRefresh()
+    }
+
+    override fun updateState(state: StarWarsState) = when (state) {
+        is StarWarsState.PlanetList -> showPlanetList(state.planets)
+        is StarWarsState.Error -> showErrorMessage(state.message)
+        StarWarsState.Loading -> loadView()
+        else -> loadView()
     }
 
     private fun onClickItem(clickedId :Int){
@@ -49,7 +43,7 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
     private fun setUpSwipeToRefresh() {
         swipeToRefreshContainer.setOnRefreshListener {
-            //todo
+
         }
 
         swipeToRefreshContainer.setColorSchemeResources(
@@ -60,7 +54,8 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
         )
     }
 
-    private fun updateList(list: List<StarWarsSinglePlanetDto>) {
+    private fun showPlanetList(list: List<StarWarsSinglePlanetDto>) {
+        showItemList()
         adapter.addValues(list)
     }
 

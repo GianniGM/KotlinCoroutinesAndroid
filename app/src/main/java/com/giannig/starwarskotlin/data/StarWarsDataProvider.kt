@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -34,26 +33,15 @@ object StarWarsDataProvider {
     /**
      * Provides all the planet list
      */
-    suspend fun providePlanets(): StarWarsState = try {
-        retrofit
-            .getPlanetListAsync()
-            .await()
-            .planets?.let {
-            StarWarsState.PlanetList(it)
-        } ?: StarWarsState.Error
-    } catch (e: IOException) {
-        StarWarsState.NetworkError(e.localizedMessage)
-    }
+    suspend fun providePlanets() = retrofit
+        .getPlanetListAsync().planets
 
-    suspend fun provideSinglePlanet(planetId: String): StarWarsState {
-        return try {
-            retrofit.getPlanetAsync(planetId).await().let {
-                StarWarsState.SinglePlanet(it)
-            }
-        } catch (e: IOException) {
-            StarWarsState.NetworkError(e.localizedMessage)
-        }
-    }
+    /**
+     * Provides a single star wars planet planet
+     */
+    suspend fun provideSinglePlanet(planetId: String) = retrofit
+        .getPlanetAsync(planetId)
+
 }
 
 

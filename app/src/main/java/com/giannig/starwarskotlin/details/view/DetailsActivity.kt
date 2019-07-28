@@ -39,13 +39,13 @@ class DetailsActivity : AppCompatActivity(), ViewState<StarWarsState> {
     override fun updateState(state: StarWarsState) {
         when (state) {
             is StarWarsState.SinglePlanet -> showPlanetData(state.planet)
-            is StarWarsState.NetworkError -> showErrorMessage(state.message)
+            is StarWarsState.Error -> showErrorMessage(state.message)
             StarWarsState.Loading -> loading()
             else -> showErrorMessage(null)
         }
     }
 
-    fun loading() {
+    private fun loading() {
         detailsLoading.visibility = VISIBLE
         planetImageView.visibility = GONE
         hideTextViews()
