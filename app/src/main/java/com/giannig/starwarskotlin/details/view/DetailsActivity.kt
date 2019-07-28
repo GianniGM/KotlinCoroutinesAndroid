@@ -1,6 +1,5 @@
 package com.giannig.starwarskotlin.details.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,16 +8,17 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.arch.ViewState
+import com.giannig.starwarskotlin.data.StarWarsActions
 import com.giannig.starwarskotlin.data.StarWarsState
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
-import com.giannig.starwarskotlin.details.DetailsPresenter
+import com.giannig.starwarskotlin.details.DetailsReducer
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
 class DetailsActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
-    private val presenter = DetailsPresenter(Job() + Dispatchers.IO)
+    private val presenter = DetailsReducer(Job() + Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +27,9 @@ class DetailsActivity : AppCompatActivity(), ViewState<StarWarsState> {
         planetImageView.visibility = GONE
         hideTextViews()
 
+        val extraValue = intent.getStringExtra(PLANET_ID_EXTRA)
         presenter.onStart(this)
-
+        presenter.sendAction(StarWarsActions.FetchSinglePlanet(extraValue))
     }
 
     override fun onDestroy() {
@@ -95,7 +96,7 @@ class DetailsActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
     companion object {
         const val PLANET_ID_EXTRA = "PLANET_ID_EXTRA"
-        fun createIntent(context: Context): Intent = Intent(context, Activity::class.java)
+        fun createIntent(context: Context): Intent = Intent(context, DetailsActivity::class.java)
     }
 
 }

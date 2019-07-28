@@ -6,16 +6,17 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.arch.ViewState
+import com.giannig.starwarskotlin.data.StarWarsActions
 import com.giannig.starwarskotlin.data.StarWarsState
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.view.DetailsActivity
-import com.giannig.starwarskotlin.main.MainPresenter
+import com.giannig.starwarskotlin.main.MainReducer
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
-    private val presenter = MainPresenter()
+    private val presenter = MainReducer()
     private val adapter = MainListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
         itemList.layoutManager = LinearLayoutManager(this)
         itemList.adapter = adapter
         presenter.onStart(this)
+        presenter.sendAction(StarWarsActions.FetchPlanetList)
+        setUpSwipeToRefresh()
     }
 
     override fun updateState(state: StarWarsState) = when (state) {
@@ -43,7 +46,7 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
 
     private fun setUpSwipeToRefresh() {
         swipeToRefreshContainer.setOnRefreshListener {
-
+            presenter.sendAction(StarWarsActions.FetchPlanetList)
         }
 
         swipeToRefreshContainer.setColorSchemeResources(
@@ -69,7 +72,7 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
         errorText.visibility = View.GONE
     }
 
-    fun showItemList() {
+    private fun showItemList() {
         swipeToRefreshContainer.isRefreshing = false
         itemList.visibility = View.VISIBLE
         errorText.visibility = View.GONE

@@ -1,23 +1,30 @@
 package com.giannig.starwarskotlin.details
 
-import com.giannig.starwarskotlin.arch.StartStopPresenter
+import com.giannig.starwarskotlin.arch.StarStopReducer
 import com.giannig.starwarskotlin.arch.ViewState
+import com.giannig.starwarskotlin.data.StarWarsActions
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
 import com.giannig.starwarskotlin.data.StarWarsState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 
-class DetailsPresenter(coroutineContext: CoroutineContext) :
-    StartStopPresenter<StarWarsState>(coroutineContext) {
+class DetailsReducer(coroutineContext: CoroutineContext) :
+    StarStopReducer<StarWarsActions, StarWarsState>(coroutineContext) {
 
-    override fun doOnAsync(view: ViewState<StarWarsState>) = launch {
+    override fun onPreReduce(view: ViewState<StarWarsState>) {
         view.updateState(StarWarsState.Loading)
-        val responseState = provideSinglePlanet("1")
+    }
+
+    override suspend fun reduce(action: StarWarsActions) = when (action) {
+        StarWarsActions.FetchPlanetList -> StarWarsState.Error("unexpected error")
+        is StarWarsActions.FetchSinglePlanet -> provideSinglePlanet(action.planetId)
+    }
+
+    override suspend fun onReduceComplete(view: ViewState<StarWarsState>, state: StarWarsState) {
         withContext(Dispatchers.Main) {
-            view.updateState(responseState)
+            view.updateState(state)
         }
     }
 
@@ -29,5 +36,4 @@ class DetailsPresenter(coroutineContext: CoroutineContext) :
     } catch (e: IOException) {
         StarWarsState.Error(e.localizedMessage)
     }
-
 }

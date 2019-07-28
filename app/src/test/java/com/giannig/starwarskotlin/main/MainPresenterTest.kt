@@ -3,7 +3,9 @@ package com.giannig.starwarskotlin.main
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
 import com.giannig.starwarskotlin.data.State
 import com.giannig.starwarskotlin.main.view.MainView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,11 +23,11 @@ class MainPresenterTest {
     @Mock
     lateinit var mockProvider: StarWarsDataProvider
 
-    lateinit var testee: MainPresenter
+    lateinit var testee: MainReducer
 
     @Before
     fun setup() {
-        testee = MainPresenter(mockView)
+        testee = MainReducer(mockView)
     }
 
     @ExperimentalCoroutinesApi
