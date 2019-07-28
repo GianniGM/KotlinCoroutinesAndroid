@@ -7,11 +7,11 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
-import com.giannig.starwarskotlin.arch.ViewState
-import com.giannig.starwarskotlin.data.StarWarsActions
-import com.giannig.starwarskotlin.data.StarWarsState
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 import com.giannig.starwarskotlin.details.DetailsReducer
+import com.giannig.starwarskotlin.redux.ViewState
+import com.giannig.starwarskotlin.store.StarWarsActions
+import com.giannig.starwarskotlin.store.StarWarsState
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

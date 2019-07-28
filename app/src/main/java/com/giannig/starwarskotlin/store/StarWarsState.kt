@@ -1,7 +1,7 @@
-package com.giannig.starwarskotlin.data
+package com.giannig.starwarskotlin.store
 
-import com.giannig.starwarskotlin.arch.State
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
+import com.giannig.starwarskotlin.redux.State
 
 /**
  * State returned from api request

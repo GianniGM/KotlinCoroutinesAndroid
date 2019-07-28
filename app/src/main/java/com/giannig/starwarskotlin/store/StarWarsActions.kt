@@ -1,6 +1,6 @@
-package com.giannig.starwarskotlin.data
+package com.giannig.starwarskotlin.store
 
-import com.giannig.starwarskotlin.arch.Action
+import com.giannig.starwarskotlin.redux.Action
 
 /**
  * State returned from api request

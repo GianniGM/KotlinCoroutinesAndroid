@@ -1,4 +1,4 @@
-package com.giannig.starwarskotlin.arch
+package com.giannig.starwarskotlin.redux
 
 import android.util.Log
 import kotlinx.coroutines.*

@@ -1,10 +1,10 @@
 package com.giannig.starwarskotlin.details
 
-import com.giannig.starwarskotlin.arch.StarStopReducer
-import com.giannig.starwarskotlin.arch.ViewState
-import com.giannig.starwarskotlin.data.StarWarsActions
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
-import com.giannig.starwarskotlin.data.StarWarsState
+import com.giannig.starwarskotlin.redux.StarStopReducer
+import com.giannig.starwarskotlin.redux.ViewState
+import com.giannig.starwarskotlin.store.StarWarsActions
+import com.giannig.starwarskotlin.store.StarWarsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException

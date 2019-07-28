@@ -1,4 +1,4 @@
-package com.giannig.starwarskotlin.arch
+package com.giannig.starwarskotlin.redux
 
 /**
  * View of Planets Details
