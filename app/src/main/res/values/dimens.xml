@@ -5,7 +5,12 @@
     <dimen name="image_size">72dp</dimen>
     <dimen name="elevation_list_item">5dp</dimen>
     <dimen name="text_item_size">21sp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="text_padding">8dp</dimen>
-    <dimen name="margin">16dp</dimen>
+
+    <dimen name="size_0">0dp</dimen>
+    <dimen name="size_0p5">4</dimen>
+    <dimen name="size_1">8dp</dimen>
+    <dimen name="size_2">16dp</dimen>
+    <dimen name="size_3">24dp</dimen>
+    <dimen name="size_4">32dp</dimen>
+    <dimen name="size_5">40dp</dimen>
 </resources>

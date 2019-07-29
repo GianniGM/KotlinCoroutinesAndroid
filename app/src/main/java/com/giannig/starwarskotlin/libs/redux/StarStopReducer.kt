@@ -1,4 +1,4 @@
-package com.giannig.starwarskotlin.redux
+package com.giannig.starwarskotlin.libs.redux
 
 import android.util.Log
 import kotlinx.coroutines.*
@@ -22,7 +22,7 @@ abstract class StarStopReducer<A : Action, S : State>(
 
     fun onStart(view: ViewState<S>) {
         channel = Channel()
-        receiveAction(view)
+        onActionReceived(view)
 
     }
 
@@ -30,12 +30,26 @@ abstract class StarStopReducer<A : Action, S : State>(
         channel.send(action)
     }
 
-    private fun receiveAction(view: ViewState<S>) = launch {
+    private fun onActionReceived(view: ViewState<S>) = launch {
+        onPreReduceAsync(view)
         onPreReduce(view)
         val action = channel.receive()
         val state = reduce(action)
-        Log.d(TAG, "action : $action -> $state ")
+        logActionState(action, state)
         onReduceComplete(view, state)
+    }
+
+    private fun logActionState(action: A, state: S) {
+        Log.d(
+            TAG,
+            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        )
+        Log.d(TAG, "action: $action")
+        Log.d(TAG, "to State=> $state ")
+        Log.d(
+            TAG,
+            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        )
     }
 
 

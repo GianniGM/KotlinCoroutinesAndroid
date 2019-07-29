@@ -1,4 +1,4 @@
-package com.giannig.starwarskotlin.details.view
+package com.giannig.starwarskotlin.details
 
 import android.content.Context
 import android.content.Intent
@@ -8,10 +8,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
-import com.giannig.starwarskotlin.details.DetailsReducer
-import com.giannig.starwarskotlin.redux.ViewState
-import com.giannig.starwarskotlin.store.StarWarsActions
-import com.giannig.starwarskotlin.store.StarWarsState
+import com.giannig.starwarskotlin.domain.store.StarWarsActions
+import com.giannig.starwarskotlin.domain.store.StarWarsState
+import com.giannig.starwarskotlin.libs.redux.ViewState
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -15,14 +15,14 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
-                android:name="com.giannig.starwarskotlin.details.view.DetailsActivity"
-                android:parentActivityName="com.giannig.starwarskotlin.main.view.MainActivity">
+                android:name="com.giannig.starwarskotlin.details.DetailsActivity"
+                android:parentActivityName="com.giannig.starwarskotlin.main.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.giannig.starwarskotlin.main.view.MainActivity"/>
+                    android:value="com.giannig.starwarskotlin.main.MainActivity" />
         </activity>
 
-        <activity android:name="com.giannig.starwarskotlin.main.view.MainActivity">
+        <activity android:name="com.giannig.starwarskotlin.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

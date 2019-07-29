@@ -1,10 +1,12 @@
-package com.giannig.starwarskotlin.main.view
+package com.giannig.starwarskotlin.main
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
 
@@ -47,19 +49,30 @@ class MainListAdapter : RecyclerView.Adapter<MainListAdapter.MainListViewHolder>
         }
     }
 
-
     /**
      * Planet list View Holder
      */
     class MainListViewHolder(private val v: View) : RecyclerView.ViewHolder(v) {
         private val planetNameText = v.findViewById<TextView>(R.id.textPlanetName)
+        private val planetImage = v.findViewById<ImageView>(R.id.planetImage)
+        private val terrainText = v.findViewById<TextView>(R.id.terrainText)
 
         /**
          * set the view of the planet item
          */
         fun set(item: StarWarsSinglePlanetDto, onClick: (View) -> Unit) {
             planetNameText.text = item.name
+            terrainText.text = item.terrain
+
             v.setOnClickListener{onClick(it)}
+
+            Glide
+                .with(v)
+                .load(item.url)
+                .centerCrop()
+                .placeholder(R.drawable.empire)
+                .into(planetImage)
+
         }
     }
 }

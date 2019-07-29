@@ -1,10 +1,10 @@
 package com.giannig.starwarskotlin.details
 
 import com.giannig.starwarskotlin.data.StarWarsDataProvider
-import com.giannig.starwarskotlin.redux.StarStopReducer
-import com.giannig.starwarskotlin.redux.ViewState
-import com.giannig.starwarskotlin.store.StarWarsActions
-import com.giannig.starwarskotlin.store.StarWarsState
+import com.giannig.starwarskotlin.domain.store.StarWarsActions
+import com.giannig.starwarskotlin.domain.store.StarWarsState
+import com.giannig.starwarskotlin.libs.redux.StarStopReducer
+import com.giannig.starwarskotlin.libs.redux.ViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -19,16 +19,15 @@ class DetailsReducer(coroutineContext: CoroutineContext) :
 
     override suspend fun reduce(action: StarWarsActions) = when (action) {
         StarWarsActions.FetchPlanetList -> StarWarsState.Error("unexpected error")
-        is StarWarsActions.FetchSinglePlanet -> provideSinglePlanet(action.planetId)
+        is StarWarsActions.FetchSinglePlanet -> provideState(action.planetId)
     }
 
-    override suspend fun onReduceComplete(view: ViewState<StarWarsState>, state: StarWarsState) {
+    override suspend fun onReduceComplete(view: ViewState<StarWarsState>, state: StarWarsState) =
         withContext(Dispatchers.Main) {
             view.updateState(state)
         }
-    }
 
-    private suspend fun provideSinglePlanet(planetId: String) = try {
+    private suspend fun provideState(planetId: String) = try {
         StarWarsDataProvider.provideSinglePlanet(planetId)
             .let {
                 StarWarsState.SinglePlanet(it)

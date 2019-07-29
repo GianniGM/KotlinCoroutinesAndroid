@@ -1,19 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_1"
+        android:layout_marginTop="@dimen/size_1"
+        android:layout_marginRight="@dimen/size_1"
         android:elevation="@dimen/elevation_list_item">
 
-    <TextView
-            android:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/textPlanetName"
-            android:layout_margin="@dimen/text_margin"
-            android:padding="@dimen/text_padding"
-            tools:text="ciao"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
-</LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:orientation="horizontal"
+            android:padding="@dimen/size_1">
+
+        <ImageView
+                android:id="@+id/planetImage"
+                android:layout_width="@dimen/size_5"
+                android:layout_height="@dimen/size_5"
+                android:layout_marginStart="@dimen/size_0"
+                android:layout_marginEnd="@dimen/size_1"
+                tools:src="@drawable/ic_launcher_foreground" />
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/textPlanetName"
+                    style="@style/TextAppearance.AppCompat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:visibility="visible"
+                    tools:text="ciao" />
+
+            <TextView
+                    android:id="@+id/terrainText"
+                    style="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="terreno morbido" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
