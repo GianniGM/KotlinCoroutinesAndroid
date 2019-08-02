@@ -14,8 +14,10 @@ import java.io.IOException
  */
 class MainReducer : StarStopReducer<StarWarsActions, StarWarsState>() {
 
-    override fun onPreReduce(view: ViewState<StarWarsState>) {
-        view.updateState(StarWarsState.Loading)
+    override suspend fun onPreReduce(view: ViewState<StarWarsState>) {
+        withContext(Main) {
+            view.updateState(StarWarsState.Loading)
+        }
     }
 
     override suspend fun reduce(action: StarWarsActions) = when (action) {

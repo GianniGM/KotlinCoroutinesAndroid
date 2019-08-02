@@ -3,6 +3,9 @@ package com.giannig.starwarskotlin.libs.redux
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 import kotlin.coroutines.CoroutineContext
 
 
@@ -13,30 +16,45 @@ abstract class StarStopReducer<A : Action, S : State>(
     override val coroutineContext: CoroutineContext
         get() = coroutineContextJob
 
-    lateinit var channel: Channel<A>
+    lateinit var receiveChannel: ReceiveChannel<A>
+    lateinit var sendingChannel: SendChannel<A>
 
     fun onClose() {
-        channel.close()
+        sendingChannel.close()
         coroutineContext.cancel()
     }
 
+    @ExperimentalCoroutinesApi
     fun onStart(view: ViewState<S>) {
-        channel = Channel()
-        onActionReceived(view)
+        val channel = Channel<A>()
+        this.sendingChannel = channel
+        this.receiveChannel = channel
 
+        onActionReceived(view)
     }
 
     fun sendAction(action: A) = launch {
-        channel.send(action)
+        sendingChannel.send(action)
     }
 
+    @ExperimentalCoroutinesApi
     private fun onActionReceived(view: ViewState<S>) = launch {
-        onPreReduceAsync(view)
-        onPreReduce(view)
-        val action = channel.receive()
-        val state = reduce(action)
-        logActionState(action, state)
-        onReduceComplete(view, state)
+        while (!receiveChannel.isClosedForReceive) {
+
+            val action: A? = try {
+                receiveChannel.receive()
+            } catch (e: ClosedReceiveChannelException) {
+                null
+            }
+
+            action?.let {
+                onPreReduceAsync(view)
+                onPreReduce(view)
+                val state = reduce(action)
+                logActionState(action, state)
+                onReduceComplete(view, state)
+            }
+        }
     }
 
     private fun logActionState(action: A, state: S) {
@@ -45,19 +63,26 @@ abstract class StarStopReducer<A : Action, S : State>(
             "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         )
         Log.d(TAG, "action: $action")
-        Log.d(TAG, "to State=> $state ")
+        Log.d(TAG, "to State => $state ")
         Log.d(
             TAG,
             "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
         )
     }
 
+    private fun logClosedChannel(){
+        Log.d(
+            TAG,
+            "++++++++++++++++++++++++++++++++++++++++++END+OF+ACTIONS+++++++++++++++++++++++++++++++++++++++++++++"
+        )
+    }
 
-    protected open fun onPreReduce(view: ViewState<S>) {
+
+    protected open suspend fun onPreReduce(view: ViewState<S>) {
         /* override it if you want to make operation before reducing stuff */
     }
 
-    protected open fun onPreReduceAsync(view: ViewState<S>) = launch {
+    protected open suspend fun onPreReduceAsync(view: ViewState<S>) = launch {
         /* override it if you want to make operation before reducing stuff asynchronously*/
     }
 

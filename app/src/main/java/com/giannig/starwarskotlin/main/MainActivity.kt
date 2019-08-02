@@ -3,6 +3,7 @@ package com.giannig.starwarskotlin.main
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.View
 import com.giannig.starwarskotlin.R
 import com.giannig.starwarskotlin.data.dto.StarWarsSinglePlanetDto
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), ViewState<StarWarsState> {
         is StarWarsState.PlanetList -> showPlanetList(state.planets)
         is StarWarsState.Error -> showErrorMessage(state.message)
         StarWarsState.Loading -> loadView()
-        else -> loadView()
+        else -> showErrorMessage("wrong state")
     }
 
     private fun onClickItem(clickedId :Int){

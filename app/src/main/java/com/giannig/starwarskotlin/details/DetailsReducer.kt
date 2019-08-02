@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 class DetailsReducer(coroutineContext: CoroutineContext) :
     StarStopReducer<StarWarsActions, StarWarsState>(coroutineContext) {
 
-    override fun onPreReduce(view: ViewState<StarWarsState>) {
+    override suspend fun onPreReduce(view: ViewState<StarWarsState>) {
         view.updateState(StarWarsState.Loading)
     }
 
