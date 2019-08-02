@@ -16,8 +16,8 @@ abstract class StarStopReducer<A : Action, S : State>(
     override val coroutineContext: CoroutineContext
         get() = coroutineContextJob
 
-    lateinit var receiveChannel: ReceiveChannel<A>
-    lateinit var sendingChannel: SendChannel<A>
+    private lateinit var receiveChannel: ReceiveChannel<A>
+    private lateinit var sendingChannel: SendChannel<A>
 
     fun onClose() {
         sendingChannel.close()
@@ -73,7 +73,7 @@ abstract class StarStopReducer<A : Action, S : State>(
     private fun logClosedChannel(){
         Log.d(
             TAG,
-            "++++++++++++++++++++++++++++++++++++++++++END+OF+ACTIONS+++++++++++++++++++++++++++++++++++++++++++++"
+            "++++++++++++++++++++++++++++++++++++++++++END+OF+ACTIONS++++++++++++++++++++++++++++++++++++++++++++"
         )
     }
 
